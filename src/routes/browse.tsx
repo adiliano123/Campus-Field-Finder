@@ -82,7 +82,7 @@ function Browse() {
           <Input
             placeholder="Search sites, categories…"
             value={q}
-            onChange={(e) => navigate({ search: (p: { field: string; q: string }) => ({ ...p, q: e.target.value }) })}
+            onChange={(e) => navigate({ search: (p) => ({ ...(p as { field: string; q: string }), q: e.target.value }) })}
             className="pl-10 h-11 bg-paper"
           />
         </div>
