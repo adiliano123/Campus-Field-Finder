@@ -90,12 +90,12 @@ function Browse() {
 
       <div className="flex flex-wrap gap-2 mb-10">
         <button
-          onClick={() => navigate({ search: (p: { field: string; q: string }) => ({ ...p, field: "" }) })}
+          onClick={() => navigate({ search: { field: "", q } })}
           className={`px-4 py-1.5 rounded-full text-sm border transition-all ${!field ? "bg-primary text-primary-foreground border-primary" : "border-border hover:border-amber"}`}
         >All fields</button>
         {fields.map((f) => (
           <button key={f.id}
-            onClick={() => navigate({ search: (p: { field: string; q: string }) => ({ ...p, field: f.slug }) })}
+            onClick={() => navigate({ search: { field: f.slug, q } })}
             className={`px-4 py-1.5 rounded-full text-sm border transition-all inline-flex items-center gap-1.5 ${field === f.slug ? "bg-primary text-primary-foreground border-primary" : "border-border hover:border-amber"}`}
           >
             <span>{f.icon}</span> {f.name}
