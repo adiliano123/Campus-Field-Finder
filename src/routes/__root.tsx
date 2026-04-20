@@ -1,4 +1,7 @@
 import { Outlet, Link, createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
+import { AuthProvider } from "@/lib/auth";
+import { Header } from "@/components/Header";
+import { Toaster } from "@/components/ui/sonner";
 
 import appCss from "../styles.css?url";
 
@@ -29,11 +32,11 @@ export const Route = createRootRoute({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { title: "FieldFinder — Internship & job sites for students, by field of study" },
+      { name: "description", content: "A curated directory of the best internship and job sites for university and college students — organized by field of study." },
+      { name: "author", content: "FieldFinder" },
+      { property: "og:title", content: "FieldFinder — Internship sites by field" },
+      { property: "og:description", content: "Discover trusted internship and job sites curated for your major." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@Lovable" },
@@ -65,5 +68,19 @@ function RootShell({ children }: { children: React.ReactNode }) {
 }
 
 function RootComponent() {
-  return <Outlet />;
+  return (
+    <AuthProvider>
+      <div className="min-h-screen flex flex-col">
+        <Header />
+        <main className="flex-1"><Outlet /></main>
+        <footer className="border-t border-border py-8 mt-16">
+          <div className="max-w-7xl mx-auto px-6 text-sm text-muted-foreground flex flex-col sm:flex-row gap-2 justify-between">
+            <span>© {new Date().getFullYear()} FieldFinder — built for students.</span>
+            <span className="font-display italic">Find your next opportunity.</span>
+          </div>
+        </footer>
+      </div>
+      <Toaster />
+    </AuthProvider>
+  );
 }
