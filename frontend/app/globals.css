@@ -1,0 +1,162 @@
+@import "tailwindcss";
+
+/* ─── Design tokens ─────────────────────────────────────────── */
+:root {
+  --bg-base:      #f0f4f8;
+  --bg-surface:   #ffffff;
+  --bg-muted:     #e8edf3;
+  --bg-input:     #f1f5f9;
+  --border:       #cbd5e1;
+  --text-primary: #0f172a;
+  --text-muted:   #475569;
+  --text-subtle:  #94a3b8;
+  --accent:       #0891b2;
+  --accent-hover: #0e7490;
+}
+
+.dark {
+  --bg-base:      #0f1117;
+  --bg-surface:   #13151c;
+  --bg-muted:     #1a1d27;
+  --bg-input:     rgba(255,255,255,0.05);
+  --border:       rgba(255,255,255,0.07);
+  --text-primary: #f1f5f9;
+  --text-muted:   rgba(255,255,255,0.55);
+  --text-subtle:  rgba(255,255,255,0.3);
+  --accent:       #06b6d4;
+  --accent-hover: #22d3ee;
+}
+
+/* ─── Base ───────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  background-color: var(--bg-base);
+  color: var(--text-primary);
+  font-family: Arial, Helvetica, sans-serif;
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+/* ─── Light mode: remap ALL hardcoded dark values ────────────── */
+
+/* Backgrounds */
+html:not(.dark) [class*="bg-[#0f1117]"]  { background-color: var(--bg-base)    !important; }
+html:not(.dark) [class*="bg-[#13151c]"]  { background-color: var(--bg-surface) !important; }
+html:not(.dark) [class*="bg-[#1a1d27]"]  { background-color: var(--bg-muted)   !important; }
+html:not(.dark) [class*="bg-[#1a2a3a]"]  { background-color: #dbeafe !important; }
+html:not(.dark) [class*="bg-[#2a1a3a]"]  { background-color: #ede9fe !important; }
+html:not(.dark) [class*="bg-[#1a2a1a]"]  { background-color: #dcfce7 !important; }
+html:not(.dark) [class*="bg-[#2a1a1a]"]  { background-color: #fee2e2 !important; }
+html:not(.dark) [class*="bg-[#2a2a1a]"]  { background-color: #fef9c3 !important; }
+html:not(.dark) [class*="bg-[#0d1f2d]"]  { background-color: #dbeafe !important; }
+html:not(.dark) [class*="bg-[#1a0d2d]"]  { background-color: #ede9fe !important; }
+html:not(.dark) [class*="bg-[#0d1f0d]"]  { background-color: #dcfce7 !important; }
+html:not(.dark) [class*="bg-[#1f0d0d]"]  { background-color: #fee2e2 !important; }
+html:not(.dark) [class*="bg-[#1f1f0d]"]  { background-color: #fef9c3 !important; }
+
+/* Semi-transparent white backgrounds → light equivalents */
+html:not(.dark) [class*="bg-white/2"]    { background-color: rgba(0,0,0,0.02)  !important; }
+html:not(.dark) [class*="bg-white/3"]    { background-color: rgba(0,0,0,0.03)  !important; }
+html:not(.dark) [class*="bg-white/5"]    { background-color: var(--bg-muted)   !important; }
+html:not(.dark) [class*="bg-white/8"]    { background-color: var(--bg-muted)   !important; }
+html:not(.dark) [class*="bg-white/10"]   { background-color: var(--bg-muted)   !important; }
+
+/* Text */
+html:not(.dark) .text-white             { color: var(--text-primary) !important; }
+html:not(.dark) [class*="text-white/80"] { color: var(--text-primary) !important; }
+html:not(.dark) [class*="text-white/70"] { color: var(--text-muted)   !important; }
+html:not(.dark) [class*="text-white/60"] { color: var(--text-muted)   !important; }
+html:not(.dark) [class*="text-white/50"] { color: var(--text-muted)   !important; }
+html:not(.dark) [class*="text-white/40"] { color: var(--text-subtle)  !important; }
+html:not(.dark) [class*="text-white/30"] { color: var(--text-subtle)  !important; }
+html:not(.dark) [class*="text-white/20"] { color: var(--text-subtle)  !important; }
+
+/* Borders */
+html:not(.dark) [class*="border-white/5"]  { border-color: var(--border) !important; }
+html:not(.dark) [class*="border-white/10"] { border-color: var(--border) !important; }
+html:not(.dark) [class*="border-white/20"] { border-color: var(--border) !important; }
+
+/* Placeholders */
+html:not(.dark) [class*="placeholder-white"] ::placeholder { color: var(--text-subtle) !important; }
+html:not(.dark) input::placeholder  { color: var(--text-subtle) !important; }
+html:not(.dark) textarea::placeholder { color: var(--text-subtle) !important; }
+
+/* Inputs & selects */
+html:not(.dark) input,
+html:not(.dark) textarea,
+html:not(.dark) select {
+  background-color: var(--bg-input) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border) !important;
+}
+
+/* Tables */
+html:not(.dark) table { color: var(--text-primary) !important; }
+html:not(.dark) th    { color: var(--text-muted) !important; }
+html:not(.dark) td    { color: var(--text-primary) !important; }
+
+/* Stat card text (gradient cards) */
+html:not(.dark) [class*="from-[#1a2a"] .text-white,
+html:not(.dark) [class*="from-[#2a1a"] .text-white,
+html:not(.dark) [class*="from-[#0d1f"] .text-white {
+  color: var(--text-primary) !important;
+}
+
+/* Stat card gradient backgrounds in light mode */
+html:not(.dark) [class*="from-[#1a2a3a]"] { background: linear-gradient(135deg, #dbeafe, #bfdbfe) !important; }
+html:not(.dark) [class*="from-[#2a1a3a]"] { background: linear-gradient(135deg, #ede9fe, #ddd6fe) !important; }
+html:not(.dark) [class*="from-[#1a2a1a]"] { background: linear-gradient(135deg, #dcfce7, #bbf7d0) !important; }
+html:not(.dark) [class*="from-[#2a1a1a]"] { background: linear-gradient(135deg, #fee2e2, #fecaca) !important; }
+html:not(.dark) [class*="from-[#2a2a1a]"] { background: linear-gradient(135deg, #fef9c3, #fef08a) !important; }
+
+/* ─── Hover states in light mode ────────────────────────────── */
+html:not(.dark) [class*="hover:bg-white/2"]:hover  { background-color: rgba(0,0,0,0.03) !important; }
+html:not(.dark) [class*="hover:bg-white/3"]:hover  { background-color: rgba(0,0,0,0.04) !important; }
+html:not(.dark) [class*="hover:bg-white/5"]:hover  { background-color: rgba(0,0,0,0.05) !important; }
+html:not(.dark) [class*="hover:bg-white/10"]:hover { background-color: rgba(0,0,0,0.07) !important; }
+
+/* Cyan accent tints — keep them but adjust for light */
+html:not(.dark) [class*="bg-cyan-500/10"]  { background-color: #ecfeff !important; }
+html:not(.dark) [class*="bg-cyan-500/20"]  { background-color: #cffafe !important; }
+html:not(.dark) [class*="text-cyan-400"]   { color: #0891b2 !important; }
+html:not(.dark) [class*="text-cyan-500"]   { color: #0891b2 !important; }
+html:not(.dark) [class*="border-cyan-500/20"] { border-color: #a5f3fc !important; }
+
+/* Status badge tints */
+html:not(.dark) [class*="bg-green-500/10"]  { background-color: #f0fdf4 !important; }
+html:not(.dark) [class*="text-green-400"]   { color: #16a34a !important; }
+html:not(.dark) [class*="border-green-500/20"] { border-color: #bbf7d0 !important; }
+
+html:not(.dark) [class*="bg-yellow-500/10"] { background-color: #fefce8 !important; }
+html:not(.dark) [class*="text-yellow-400"]  { color: #ca8a04 !important; }
+html:not(.dark) [class*="border-yellow-500/20"] { border-color: #fef08a !important; }
+
+html:not(.dark) [class*="bg-red-500/10"]    { background-color: #fff1f2 !important; }
+html:not(.dark) [class*="text-red-400"]     { color: #dc2626 !important; }
+html:not(.dark) [class*="border-red-500/20"] { border-color: #fecaca !important; }
+
+html:not(.dark) [class*="bg-blue-500/10"]   { background-color: #eff6ff !important; }
+html:not(.dark) [class*="text-blue-400"]    { color: #2563eb !important; }
+
+html:not(.dark) [class*="bg-purple-500/10"] { background-color: #faf5ff !important; }
+html:not(.dark) [class*="text-purple-400"]  { color: #9333ea !important; }
+
+/* Gradient text colors on stat cards */
+html:not(.dark) .text-cyan-400   { color: #0891b2 !important; }
+html:not(.dark) .text-purple-400 { color: #9333ea !important; }
+html:not(.dark) .text-orange-400 { color: #ea580c !important; }
+html:not(.dark) .text-green-400  { color: #16a34a !important; }
+html:not(.dark) .text-yellow-400 { color: #ca8a04 !important; }
+html:not(.dark) .text-red-400    { color: #dc2626 !important; }
+
+/* ─── Scrollbar (light) ──────────────────────────────────────── */
+html:not(.dark) ::-webkit-scrollbar       { width: 6px; height: 6px; }
+html:not(.dark) ::-webkit-scrollbar-track { background: var(--bg-muted); }
+html:not(.dark) ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+/* ─── Shared utilities ───────────────────────────────────────── */
+.card {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+}
