@@ -1,19 +1,13 @@
 'use client';
 import { useFetch } from '@/hooks/useFetch';
 import { internshipService } from '@/services/internship.service';
+import { companyService } from '@/services/company.service';
+import { applicationService } from '@/services/application.service';
+import { useState, useEffect } from 'react';
 import {
   ResponsiveContainer, BarChart, Bar, LineChart, Line,
   PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
 } from 'recharts';
-
-const monthlyApps = [
-  { month: 'Jan', applications: 2, accepted: 1 },
-  { month: 'Feb', applications: 5, accepted: 3 },
-  { month: 'Mar', applications: 8, accepted: 5 },
-  { month: 'Apr', applications: 6, accepted: 4 },
-  { month: 'May', applications: 12, accepted: 7 },
-  { month: 'Jun', applications: 9, accepted: 6 },
-];
 
 const typeColors = ['#06b6d4', '#a855f7', '#f97316', '#22c55e'];
 
@@ -26,6 +20,28 @@ const tooltipStyle = {
 
 export default function CompanyReportsSection() {
   const { data: internships } = useFetch(() => internshipService.getAll());
+  const { data: stats } = useFetch(() => companyService.getStats());
+  const [monthlyApps, setMonthlyApps] = useState<{ month: string; applications: number; accepted: number }[]>([]);
+
+  useEffect(() => {
+    if (!internships?.length) {
+      setMonthlyApps([]);
+      return;
+    }
+    Promise.all(internships.map((i) => applicationService.getByInternship(i.id)))
+      .then((allApps) => {
+        const flat = allApps.flat();
+        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        const now = new Date();
+        const data = months.slice(0, now.getMonth() + 1).map((month, idx) => ({
+          month,
+          applications: flat.filter((a) => new Date(a.applied_at).getMonth() === idx).length,
+          accepted: flat.filter((a) => a.status === 'accepted' && new Date(a.applied_at).getMonth() === idx).length,
+        }));
+        setMonthlyApps(data);
+      })
+      .catch(() => setMonthlyApps([]));
+  }, [internships]);
 
   // Build type distribution from real data
   const typeCounts: Record<string, number> = {};
@@ -38,9 +54,9 @@ export default function CompanyReportsSection() {
     fill: typeColors[i % typeColors.length],
   }));
 
-  const totalApps   = monthlyApps.reduce((s, m) => s + m.applications, 0);
-  const totalAccepted = monthlyApps.reduce((s, m) => s + m.accepted, 0);
-  const acceptRate  = totalApps > 0 ? Math.round((totalAccepted / totalApps) * 100) : 0;
+  const totalApps     = stats?.total_applications ?? 0;
+  const totalAccepted = stats?.accepted ?? 0;
+  const acceptRate    = totalApps > 0 ? Math.round((totalAccepted / totalApps) * 100) : 0;
 
   return (
     <div className="space-y-6">

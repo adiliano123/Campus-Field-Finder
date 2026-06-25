@@ -23,3 +23,4 @@ export const ROUTES = {
   profile: '/profile',
   settings: '/settings',
 };
+

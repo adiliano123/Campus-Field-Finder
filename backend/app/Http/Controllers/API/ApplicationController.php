@@ -49,4 +49,24 @@ class ApplicationController extends Controller
         $application = $this->repo->updateStatus($id, $data['status']);
         return response()->json($application);
     }
+
+    // Student: withdraw (delete) a pending application
+    public function withdraw(Request $request, $id)
+    {
+        $student = $request->user()->student;
+        abort_if(!$student, 403, 'Student profile not found.');
+
+        $application = \App\Models\Application::where('id', $id)
+            ->where('student_id', $student->id)
+            ->firstOrFail();
+
+        abort_if(
+            $application->status !== 'pending',
+            422,
+            'Only pending applications can be withdrawn.'
+        );
+
+        $application->delete();
+        return response()->json(['message' => 'Application withdrawn.']);
+    }
 }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Models\Company;
 use App\Models\Internship;
+use App\Models\Notification;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -48,6 +49,13 @@ class AdminController extends Controller
     {
         $company = Company::findOrFail($id);
         $company->update(['is_approved' => true]);
+
+        Notification::create([
+            'user_id' => $company->user_id,
+            'message' => "Your company \"{$company->company_name}\" has been approved. You can now post opportunities.",
+            'type'    => 'success',
+        ]);
+
         return response()->json(['message' => 'Company approved.', 'company' => $company]);
     }
 
@@ -55,6 +63,13 @@ class AdminController extends Controller
     {
         $company = Company::findOrFail($id);
         $company->update(['is_approved' => false]);
+
+        Notification::create([
+            'user_id' => $company->user_id,
+            'message' => "Your company \"{$company->company_name}\" registration was not approved.",
+            'type'    => 'warning',
+        ]);
+
         return response()->json(['message' => 'Company rejected.', 'company' => $company]);
     }
 
@@ -69,5 +84,48 @@ class AdminController extends Controller
     {
         User::findOrFail($id)->delete();
         return response()->json(['message' => 'User deleted.']);
+    }
+
+    // Admin: delete any internship
+    public function deleteInternship($id)
+    {
+        $internship = Internship::findOrFail($id);
+        $internship->delete();
+        return response()->json(['message' => 'Internship deleted.']);
+    }
+
+    /**
+     * GET /admin/applications
+     * All applications platform-wide with student user + internship + company.
+     */
+    public function applications()
+    {
+        $apps = \App\Models\Application::with([
+            'student.user:id,name,email',
+            'internship.company:id,company_name,industry',
+        ])
+            ->latest()
+            ->get()
+            ->map(function ($app) {
+                return [
+                    'id'           => $app->id,
+                    'status'       => $app->status,
+                    'cover_letter' => $app->cover_letter,
+                    'applied_at'   => $app->created_at,
+                    'student' => [
+                        'name'  => $app->student?->user?->name,
+                        'email' => $app->student?->user?->email,
+                    ],
+                    'internship' => [
+                        'id'      => $app->internship?->id,
+                        'title'   => $app->internship?->title,
+                        'company' => [
+                            'company_name' => $app->internship?->company?->company_name,
+                        ],
+                    ],
+                ];
+            });
+
+        return response()->json($apps);
     }
 }

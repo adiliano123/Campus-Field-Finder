@@ -62,4 +62,23 @@ class InternshipController extends Controller
         $this->service->delete($id, $request->user()->company->id);
         return response()->json(['message' => 'Deleted.']);
     }
+
+    // Student: get recommended internships based on their course/profile
+    public function recommended(Request $request)
+    {
+        $student = $request->user()->student;
+
+        if (!$student) {
+            // No profile yet — return latest internships
+            $internships = \App\Models\Internship::with('company')
+                ->where('deadline', '>=', now())
+                ->latest()
+                ->limit(6)
+                ->get();
+            return response()->json($internships);
+        }
+
+        $recommendations = app(\App\Services\RecommendationService::class)->recommend($student);
+        return response()->json($recommendations);
+    }
 }

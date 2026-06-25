@@ -11,9 +11,8 @@ export default function LoginPage() {
   const setAuth = useAuthStore((s) => s.setAuth);
   const [form, setForm] = useState({ email: '', password: '' });
   const [showPassword, setShowPassword] = useState(false);
-  const [remember, setRemember] = useState(false);
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [error, setError]             = useState('');
+  const [loading, setLoading]         = useState(false);
 
   const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -21,15 +20,30 @@ export default function LoginPage() {
     setError('');
     try {
       const res = await authService.login(form);
+
+      // 1. Clear any stale cookies first
+      document.cookie = 'token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+      document.cookie = 'role=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+      localStorage.removeItem('token');
+      localStorage.removeItem('fc_token');
+      localStorage.removeItem('auth-storage');
+
+      // 2. Persist to zustand + localStorage
       setAuth(res.user, res.token);
-      document.cookie = `token=${res.token}; path=/`;
-      document.cookie = `role=${res.user.role}; path=/`;
+
+      // 3. Write fresh cookies so Next.js middleware can read the role
+      const maxAge = 60 * 60 * 24 * 7; // 7 days
+      document.cookie = `token=${res.token}; path=/; max-age=${maxAge}; SameSite=Lax`;
+      document.cookie = `role=${res.user.role}; path=/; max-age=${maxAge}; SameSite=Lax`;
+
+      // 4. Navigate to the correct dashboard
       const dashMap: Record<string, string> = {
         student: ROUTES.studentDashboard,
         company: ROUTES.companyDashboard,
-        admin: ROUTES.adminDashboard,
+        admin:   ROUTES.adminDashboard,
       };
-      router.push(dashMap[res.user.role]);
+      router.refresh();
+      router.push(dashMap[res.user.role] ?? ROUTES.studentDashboard);
     } catch (err: unknown) {
       const e = err as { response?: { data?: { message?: string } } };
       setError(e?.response?.data?.message ?? 'Invalid email or password.');
@@ -44,6 +58,7 @@ export default function LoginPage() {
 
         {/* ── Left: Form ── */}
         <div className="flex-1 bg-white px-10 py-12 flex flex-col justify-center">
+
           {/* Logo */}
           <div className="flex items-center gap-2 mb-8">
             <span className="text-3xl">🎓</span>
@@ -53,7 +68,7 @@ export default function LoginPage() {
           </div>
 
           <h2 className="text-3xl font-extrabold text-gray-900 mb-1">Welcome Back</h2>
-          <p className="text-gray-400 text-sm mb-7">Let&apos;s login to find amazing opportunities</p>
+          <p className="text-gray-400 text-sm mb-7">Sign in to find amazing opportunities</p>
 
           {error && (
             <p className="text-red-500 text-sm mb-4 bg-red-50 border border-red-100 p-3 rounded-xl">
@@ -95,17 +110,8 @@ export default function LoginPage() {
               </button>
             </div>
 
-            {/* Remember + Forgot */}
-            <div className="flex items-center justify-between text-sm">
-              <label className="flex items-center gap-2 text-gray-500 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={remember}
-                  onChange={(e) => setRemember(e.target.checked)}
-                  className="accent-purple-600"
-                />
-                Remember me
-              </label>
+            {/* Forgot */}
+            <div className="flex justify-end text-sm">
               <a href="#" className="text-purple-600 hover:underline font-medium">Forgot Password?</a>
             </div>
 
@@ -113,7 +119,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-purple-700 text-white py-3 rounded-xl font-semibold text-sm hover:bg-purple-800 disabled:opacity-50 transition-colors mt-1"
+              className="w-full bg-purple-700 text-white py-3 rounded-xl font-semibold text-sm hover:bg-purple-800 disabled:opacity-50 transition-colors"
             >
               {loading ? 'Signing in...' : 'Login'}
             </button>
@@ -125,26 +131,29 @@ export default function LoginPage() {
               Sign Up
             </Link>
           </p>
+          <p className="text-center text-sm text-gray-400 mt-6">
+          <Link href="/" className="text-purple-600 hover:underline font-semibold">
+              Back to home page
+            </Link>
+            </p>
         </div>
 
         {/* ── Right: Visual panel ── */}
-        <div className="hidden md:flex flex-1 relative bg-gradient-to-br from-slate-600 via-slate-700 to-slate-800 rounded-r-3xl overflow-hidden flex-col items-center justify-end p-8">
-          {/* top caption */}
-          <p className="absolute top-8 left-0 right-0 text-center text-white font-semibold text-base px-8 leading-snug drop-shadow">
-            Browse thousands of internships,<br />connect with top companies.
-          </p>
-
-          {/* decorative blobs */}
+        <div className="hidden md:flex flex-1 relative bg-linear-to-br from-slate-600 via-slate-700 to-slate-800 rounded-r-3xl overflow-hidden flex-col items-center justify-center p-8">
           <div className="absolute top-16 left-8 w-40 h-40 rounded-full bg-purple-500 opacity-20 blur-2xl" />
           <div className="absolute bottom-24 right-8 w-48 h-48 rounded-full bg-yellow-400 opacity-15 blur-2xl" />
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 rounded-full bg-green-400 opacity-10 blur-3xl" />
 
-            {/* big emoji illustration */}
-            <p className="text-white/40 text-xs">Your career journey starts here</p>
+          <div className="relative text-center">
+            <p className="text-6xl mb-6">🎓</p>
+            <p className="text-white font-semibold text-lg leading-snug">
+              Browse thousands of<br />internships &amp; attachments
+            </p>
+            <p className="text-white/40 text-sm mt-3">Your career journey starts here</p>
           </div>
         </div>
 
       </div>
-
+    </div>
   );
 }

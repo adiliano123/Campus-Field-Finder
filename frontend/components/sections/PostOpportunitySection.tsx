@@ -22,7 +22,7 @@ export default function PostOpportunitySection() {
     setError('');
     try {
       await internshipService.create(form);
-      setActive('dashboard');
+      setActive('opportunities');
     } catch (err: unknown) {
       const msg = (err as { response?: { data?: { message?: string } } })?.response?.data?.message;
       setError(msg ?? 'Failed to post opportunity.');

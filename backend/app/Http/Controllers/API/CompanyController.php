@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Models\Application;
 use App\Models\Company;
+use App\Models\Internship;
 use Illuminate\Http\Request;
 
 class CompanyController extends Controller
@@ -38,5 +40,20 @@ class CompanyController extends Controller
 
         $company->update($data);
         return response()->json($company);
+    }
+
+    public function stats(Request $request)
+    {
+        $company = $request->user()->company;
+        abort_if(!$company, 403, 'Company profile not found.');
+
+        $internshipIds = Internship::where('company_id', $company->id)->pluck('id');
+
+        return response()->json([
+            'active_listings'    => $internshipIds->count(),
+            'total_applications' => Application::whereIn('internship_id', $internshipIds)->count(),
+            'accepted'           => Application::whereIn('internship_id', $internshipIds)->where('status', 'accepted')->count(),
+            'pending'            => Application::whereIn('internship_id', $internshipIds)->where('status', 'pending')->count(),
+        ]);
     }
 }

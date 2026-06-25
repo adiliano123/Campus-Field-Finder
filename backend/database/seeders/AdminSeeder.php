@@ -2,21 +2,31 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
 use Illuminate\Database\Seeder;
+use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
 class AdminSeeder extends Seeder
 {
-    public function run()
+    /**
+     * Run the database seeds.
+     */
+    public function run(): void
     {
-        User::firstOrCreate(
-            ['email' => 'admin@fieldfinder.com'],
+        // Create or update admin user
+        User::updateOrCreate(
+            ['email' => 'dicklamaswili@gmail.com'],
             [
-                'name'     => 'System Admin',
-                'password' => Hash::make('password'),
-                'role'     => 'admin',
+                'name' => 'Admin',
+                'email' => 'dicklamaswili@gmail.com',
+                'password' => Hash::make('admin123'),
+                'role' => 'admin',
+                'email_verified_at' => now(),
             ]
         );
+
+        $this->command->info('Admin user created successfully!');
+        $this->command->info('Email: dicklamaswili@gmail.com');
+        $this->command->info('Password: admin123');
     }
 }

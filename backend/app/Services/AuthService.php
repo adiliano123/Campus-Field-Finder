@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Notification;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -23,6 +24,14 @@ class AuthService
                 'company_name' => $data['name'],
                 'is_approved'  => false,
             ]);
+
+            User::where('role', 'admin')->each(function ($admin) use ($user) {
+                Notification::create([
+                    'user_id' => $admin->id,
+                    'message' => "New company \"{$user->name}\" registered and awaits approval.",
+                    'type'    => 'info',
+                ]);
+            });
         } elseif ($data['role'] === 'student') {
             $user->student()->create([]);
         }

@@ -24,7 +24,7 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL('/login', request.url));
   }
 
-  // Already logged in — redirect away from auth pages to correct dashboard
+  // Already logged in — redirect away from auth pages to correct dashboard.
   if (isAuthRoute && token && role) {
     const dashMap: Record<string, string> = {
       student: '/dashboard/student',

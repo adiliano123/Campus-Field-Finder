@@ -25,9 +25,19 @@ export interface Application {
   status: ApplicationStatus;
   cover_letter: string;
   applied_at: string;
+  created_at: string;
   internship?: Internship;
   student?: {
-    name: string;
-    email: string;
+    id: number;
+    university?: string;
+    course?: string;
+    year_of_study?: number;
+    cv_url?: string;
+    bio?: string;
+    user?: {
+      id: number;
+      name: string;
+      email: string;
+    };
   };
 }

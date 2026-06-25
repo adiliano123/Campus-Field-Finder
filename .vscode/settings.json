@@ -1,3 +1,9 @@
 {
-    "typescript.autoClosingTags": false
+    "typescript.autoClosingTags": false,
+    "cSpell.words": [
+        "phpunit",
+        "sdlc",
+        "terminalized",
+        "ZYGEN"
+    ]
 }

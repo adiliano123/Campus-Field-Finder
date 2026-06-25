@@ -52,7 +52,7 @@ export default function Home() {
       </nav>
 
       {/* ── Hero ── */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-yellow-50 via-white to-purple-50 px-8 pt-16 pb-0">
+      <section className="relative overflow-hidden bg-linear-to-br from-yellow-50 via-white to-purple-50 px-8 pt-16 pb-0">
         {/* blobs */}
         <div className="pointer-events-none absolute top-0 left-0 w-72 h-72 rounded-full bg-yellow-200 opacity-30 blur-3xl" />
         <div className="pointer-events-none absolute bottom-0 right-0 w-72 h-72 rounded-full bg-purple-200 opacity-30 blur-3xl" />
@@ -104,7 +104,7 @@ export default function Home() {
             <div className="absolute bottom-0 right-0 w-80 h-80 rounded-full bg-green-100 opacity-50 blur-2xl" />
 
             {/* Hero image placeholder */}
-            <div className="relative z-0 w-full max-w-md h-80 rounded-t-3xl bg-gradient-to-br from-yellow-100 via-green-50 to-purple-100 flex items-center justify-center overflow-hidden">
+            <div className="relative z-0 w-full max-w-md h-80 rounded-t-3xl bg-linear-to-br from-yellow-100 via-green-50 to-purple-100 flex items-center justify-center overflow-hidden">
               <span className="text-8xl select-none">👩‍💻</span>
             </div>
           </div>
@@ -127,7 +127,7 @@ export default function Home() {
       </section>
 
       {/* ── Trust line ── */}
-      <div className="bg-gradient-to-r from-yellow-50 via-white to-purple-50 py-5 text-center text-sm text-gray-500 border-b border-gray-100">
+      <div className="bg-linear-to-r from-yellow-50 via-white to-purple-50 py-5 text-center text-sm text-gray-500 border-b border-gray-100">
         💛 Trusted by Students &nbsp;·&nbsp; 💜 Preferred by Companies &nbsp;·&nbsp; 💚 Powered by Opportunities
       </div>
 

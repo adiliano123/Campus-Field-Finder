@@ -1,12 +1,8 @@
 'use client';
-
-const mockNotifications = [
-  { id: 1, message: 'New company "TechCorp Ltd" registered and awaiting approval.', type: 'info',    is_read: false, time: '2 min ago' },
-  { id: 2, message: 'Student John Doe submitted an application for Software Internship.', type: 'info', is_read: false, time: '15 min ago' },
-  { id: 3, message: 'Company "DataSoft" has been approved successfully.', type: 'success', is_read: true, time: '1 hour ago' },
-  { id: 4, message: '5 new students registered today.', type: 'info', is_read: true, time: '3 hours ago' },
-  { id: 5, message: 'Opportunity "Field Attachment 2026" deadline is tomorrow.', type: 'warning', is_read: true, time: '1 day ago' },
-];
+import { useState } from 'react';
+import { useFetch } from '@/hooks/useFetch';
+import { notificationService } from '@/services/notification.service';
+import type { Notification } from '@/services/notification.service';
 
 const typeColors: Record<string, string> = {
   info:    'bg-blue-500/10 text-blue-400 border-blue-500/20',
@@ -16,7 +12,27 @@ const typeColors: Record<string, string> = {
 };
 
 export default function AdminNotificationsSection() {
-  const unread = mockNotifications.filter((n) => !n.is_read).length;
+  const { data: notifications, loading, refetch } = useFetch(() =>
+    notificationService.getAll().catch(() => [] as Notification[])
+  );
+  const [marking, setMarking] = useState(false);
+
+  const unread = notifications?.filter((n) => !n.is_read).length ?? 0;
+
+  const handleMarkAllRead = async () => {
+    setMarking(true);
+    try {
+      await notificationService.markAllRead();
+      refetch();
+    } finally {
+      setMarking(false);
+    }
+  };
+
+  const handleMarkRead = async (id: number) => {
+    await notificationService.markRead(id);
+    refetch();
+  };
 
   return (
     <div className="space-y-6 max-w-2xl">
@@ -28,26 +44,41 @@ export default function AdminNotificationsSection() {
           </p>
         </div>
         {unread > 0 && (
-          <span className="bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 text-xs px-3 py-1 rounded-full">
-            {unread} new
-          </span>
+          <button
+            disabled={marking}
+            onClick={handleMarkAllRead}
+            className="text-xs bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 px-3 py-1 rounded-lg hover:bg-cyan-500/20 disabled:opacity-50 transition-colors">
+            {marking ? 'Marking...' : 'Mark all read'}
+          </button>
         )}
       </div>
 
       <div className="bg-[#13151c] border border-white/5 rounded-xl overflow-hidden">
-        {mockNotifications.map((n) => (
-          <div key={n.id}
-            className={`flex items-start gap-4 px-5 py-4 border-b border-white/5 last:border-0 ${!n.is_read ? 'bg-white/2' : ''}`}>
-            <div className={`mt-1 w-2 h-2 rounded-full shrink-0 ${!n.is_read ? 'bg-cyan-400' : 'bg-white/10'}`} />
-            <div className="flex-1 min-w-0">
-              <p className="text-white/80 text-sm">{n.message}</p>
-              <p className="text-white/30 text-xs mt-1">{n.time}</p>
-            </div>
-            <span className={`text-xs px-2 py-0.5 rounded-full border shrink-0 ${typeColors[n.type]}`}>
-              {n.type}
-            </span>
+        {loading ? (
+          <p className="text-white/30 text-sm p-5">Loading...</p>
+        ) : !notifications?.length ? (
+          <div className="p-8 text-center">
+            <p className="text-4xl mb-3">🔔</p>
+            <p className="text-white/40 text-sm">No notifications yet.</p>
           </div>
-        ))}
+        ) : (
+          notifications.map((n) => (
+            <button
+              key={n.id}
+              type="button"
+              onClick={() => !n.is_read && handleMarkRead(n.id)}
+              className={`w-full flex items-start gap-4 px-5 py-4 border-b border-white/5 last:border-0 text-left ${!n.is_read ? 'bg-white/2 hover:bg-white/4' : ''}`}>
+              <div className={`mt-1 w-2 h-2 rounded-full shrink-0 ${!n.is_read ? 'bg-cyan-400' : 'bg-white/10'}`} />
+              <div className="flex-1 min-w-0">
+                <p className="text-white/80 text-sm">{n.message}</p>
+                <p className="text-white/30 text-xs mt-1">{new Date(n.created_at).toLocaleString()}</p>
+              </div>
+              <span className={`text-xs px-2 py-0.5 rounded-full border shrink-0 ${typeColors[n.type] ?? typeColors.info}`}>
+                {n.type}
+              </span>
+            </button>
+          ))
+        )}
       </div>
     </div>
   );

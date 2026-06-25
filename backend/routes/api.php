@@ -7,6 +7,9 @@ use App\Http\Controllers\API\CompanyController;
 use App\Http\Controllers\API\InternshipController;
 use App\Http\Controllers\API\ApplicationController;
 use App\Http\Controllers\API\AdminController;
+use App\Http\Controllers\API\NotificationController;
+use App\Http\Controllers\API\DocumentController;
+use App\Http\Controllers\API\SavedInternshipController;
 
 // Public routes
 Route::prefix('auth')->group(function () {
@@ -26,18 +29,34 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('auth/me',               [AuthController::class, 'me']);
     Route::put('auth/change-password',  [AuthController::class, 'changePassword']);
 
+    // Notifications — available to all authenticated roles
+    Route::get('notifications',             [NotificationController::class, 'index']);
+    Route::patch('notifications/read-all',  [NotificationController::class, 'markAllRead']);
+    Route::patch('notifications/{id}/read', [NotificationController::class, 'markRead']);
+
+    // Documents — available to all authenticated roles
+    Route::get('documents',         [DocumentController::class, 'index']);
+    Route::post('documents',        [DocumentController::class, 'store']);
+    Route::delete('documents/{id}', [DocumentController::class, 'destroy']);
+
     // Student routes
     Route::middleware('role:student')->group(function () {
         Route::get('student/profile',    [StudentController::class, 'profile']);
         Route::put('student/profile',    [StudentController::class, 'updateProfile']);
         Route::get('applications',       [ApplicationController::class, 'index']);
         Route::post('applications',      [ApplicationController::class, 'store']);
+        Route::delete('applications/{id}', [ApplicationController::class, 'withdraw']);
+        Route::get('internships/recommended', [InternshipController::class, 'recommended']);
+        Route::get('saved-internships',  [SavedInternshipController::class, 'index']);
+        Route::post('saved-internships', [SavedInternshipController::class, 'store']);
+        Route::delete('saved-internships/{internshipId}', [SavedInternshipController::class, 'destroy']);
     });
 
     // Company routes
     Route::middleware('role:company')->group(function () {
         Route::get('company/profile',    [CompanyController::class, 'profile']);
         Route::put('company/profile',    [CompanyController::class, 'updateProfile']);
+        Route::get('company/stats',      [CompanyController::class, 'stats']);
         Route::post('internships',       [InternshipController::class, 'store']);
         Route::put('internships/{id}',   [InternshipController::class, 'update']);
         Route::delete('internships/{id}',[InternshipController::class, 'destroy']);
@@ -47,11 +66,13 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Admin routes
     Route::middleware('role:admin')->prefix('admin')->group(function () {
-        Route::get('stats',                  [AdminController::class, 'stats']);
-        Route::get('companies',              [AdminController::class, 'companies']);
+        Route::get('stats',                    [AdminController::class, 'stats']);
+        Route::get('companies',                [AdminController::class, 'companies']);
         Route::patch('companies/{id}/approve', [AdminController::class, 'approveCompany']);
         Route::patch('companies/{id}/reject',  [AdminController::class, 'rejectCompany']);
-        Route::get('students',               [AdminController::class, 'students']);
-        Route::delete('users/{id}',          [AdminController::class, 'deleteUser']);
+        Route::get('students',                 [AdminController::class, 'students']);
+        Route::get('applications',             [AdminController::class, 'applications']);
+        Route::delete('users/{id}',            [AdminController::class, 'deleteUser']);
+        Route::delete('internships/{id}',      [AdminController::class, 'deleteInternship']);
     });
 });

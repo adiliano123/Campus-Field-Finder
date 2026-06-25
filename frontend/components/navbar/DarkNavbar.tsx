@@ -3,24 +3,43 @@ import { useState } from 'react';
 import { useAuthStore } from '@/store/authStore';
 import { useThemeStore } from '@/store/themeStore';
 
-export default function DarkNavbar() {
+interface DarkNavbarProps {
+  onMenuClick?: () => void;
+}
+
+export default function DarkNavbar({ onMenuClick }: DarkNavbarProps) {
   const user = useAuthStore((s) => s.user);
   const { theme, toggle } = useThemeStore();
   const [search, setSearch] = useState('');
 
   return (
     <header className="bg-[var(--bg-surface)] border-b border-[var(--border)] px-6 py-3 flex items-center justify-between gap-4">
-      {/* Search */}
-      <div className="flex items-center gap-2 bg-[var(--bg-muted)] border border-[var(--border)] rounded-lg px-3 py-2 w-64">
-        <svg className="w-4 h-4 text-[var(--text-subtle)] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-        </svg>
-        <input
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          placeholder="Search Dashboard"
-          className="bg-transparent text-sm text-[var(--text-primary)] placeholder-[var(--text-subtle)] outline-none w-full"
-        />
+      {/* Left side (Hamburger on mobile + Search on desktop) */}
+      <div className="flex items-center gap-4">
+        {onMenuClick && (
+          <button
+            onClick={onMenuClick}
+            className="lg:hidden p-2 rounded-lg text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-muted)] transition-colors"
+            aria-label="Open sidebar"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
+        )}
+
+        {/* Search */}
+        <div className="flex items-center gap-2 bg-[var(--bg-muted)] border border-[var(--border)] rounded-lg px-3 py-2 w-64">
+          <svg className="w-4 h-4 text-[var(--text-subtle)] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+          <input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search Dashboard"
+            className="bg-transparent text-sm text-[var(--text-primary)] placeholder-[var(--text-subtle)] outline-none w-full"
+          />
+        </div>
       </div>
 
       {/* Right side */}

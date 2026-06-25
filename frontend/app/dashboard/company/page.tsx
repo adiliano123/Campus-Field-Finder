@@ -2,6 +2,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { internshipService } from '@/services/internship.service';
+import { companyService } from '@/services/company.service';
 import { Internship } from '@/types/internship.types';
 import StatCard from '@/components/cards/StatCard';
 import InternshipCard from '@/components/cards/InternshipCard';
@@ -32,12 +33,19 @@ function CompanyHome() {
   const ct = useChartTheme();
   const setActive = useDashboardStore((s) => s.setActive);
   const [opportunities, setOpportunities] = useState<Internship[]>([]);
+  const [stats, setStats] = useState<{ total_applications: number; accepted: number; pending: number } | null>(null);
   const [loading, setLoading] = useState(true);
 
   const load = useCallback(async () => {
     setLoading(true);
-    try { setOpportunities(await internshipService.getAll()); }
-    finally { setLoading(false); }
+    try {
+      const [list, s] = await Promise.all([
+        internshipService.getAll(),
+        companyService.getStats().catch(() => null),
+      ]);
+      setOpportunities(list);
+      setStats(s);
+    } finally { setLoading(false); }
   }, []);
 
   useEffect(() => { load(); }, [load]);
@@ -62,10 +70,10 @@ function CompanyHome() {
       </div>
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard label="Active Listings"    value={opportunities.length} change="Total posted"       gradient="bg-gradient-to-br from-[#1a2a3a] to-[#0d1f2d]" />
-        <StatCard label="Total Applications" value="—"                    change="Across all listings" gradient="bg-gradient-to-br from-[#2a1a3a] to-[#1a0d2d]" />
-        <StatCard label="Accepted"           value="—"                    change="This month"          gradient="bg-gradient-to-br from-[#1a2a1a] to-[#0d1f0d]" />
-        <StatCard label="Pending Review"     value="—"                    change="Awaiting decision"   gradient="bg-gradient-to-br from-[#2a2a1a] to-[#1f1f0d]" />
+        <StatCard label="Active Listings"    value={opportunities.length}              change="Total posted"       gradient="bg-gradient-to-br from-[#1a2a3a] to-[#0d1f2d]" />
+        <StatCard label="Total Applications" value={stats?.total_applications ?? '—'}  change="Across all listings" gradient="bg-gradient-to-br from-[#2a1a3a] to-[#1a0d2d]" />
+        <StatCard label="Accepted"           value={stats?.accepted ?? '—'}          change="This month"          gradient="bg-gradient-to-br from-[#1a2a1a] to-[#0d1f0d]" />
+        <StatCard label="Pending Review"     value={stats?.pending ?? '—'}           change="Awaiting decision"   gradient="bg-gradient-to-br from-[#2a2a1a] to-[#1f1f0d]" />
       </div>
 
       <div className="bg-[#13151c] border border-white/5 rounded-xl p-6">
