@@ -175,7 +175,7 @@ export default function RegisterPage() {
         </div>
 
         {/* ── Right: Visual panel ── */}
-        <div className="hidden md:flex flex-1 relative bg-gradient-to-br from-slate-600 via-slate-700 to-slate-800 rounded-r-3xl overflow-hidden flex-col items-center justify-center p-8">
+        <div className="hidden md:flex flex-1 relative bg-linear-to-br from-slate-600 via-slate-700 to-slate-800 rounded-r-3xl overflow-hidden flex-col items-center justify-center p-8">
           <div className="absolute top-16 left-8 w-40 h-40 rounded-full bg-purple-500 opacity-20 blur-2xl" />
           <div className="absolute bottom-24 right-8 w-48 h-48 rounded-full bg-yellow-400 opacity-15 blur-2xl" />
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 rounded-full bg-green-400 opacity-10 blur-3xl" />
