@@ -4,14 +4,13 @@ import type { NextRequest } from 'next/server';
 const protectedRoutes = ['/dashboard', '/applications', '/profile', '/settings'];
 const authRoutes = ['/login', '/register'];
 
-// Role-restricted route prefixes
 const roleRoutes: Record<string, string> = {
   '/dashboard/student': 'student',
   '/dashboard/company': 'company',
   '/dashboard/admin': 'admin',
 };
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const token = request.cookies.get('token')?.value;
   const role = request.cookies.get('role')?.value;
   const { pathname } = request.nextUrl;
@@ -24,7 +23,7 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL('/login', request.url));
   }
 
-  // Already logged in — redirect away from auth pages to correct dashboard.
+  // Already logged in — redirect away from auth pages to correct dashboard
   if (isAuthRoute && token && role) {
     const dashMap: Record<string, string> = {
       student: '/dashboard/student',
