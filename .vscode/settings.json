@@ -1,9 +1,12 @@
 {
     "typescript.autoClosingTags": false,
     "cSpell.words": [
+        "Amina",
+        "laravel",
         "phpunit",
         "sdlc",
         "terminalized",
+        "Turbopack",
         "ZYGEN"
     ],
     "folder-color.pathColors": []

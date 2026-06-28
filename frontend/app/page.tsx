@@ -24,7 +24,6 @@ const TESTIMONIALS = [
 
 export default function Home() {
   const [scrolled, setScrolled] = useState(false);
-  const [count, setCount] = useState({ students: 0, internships: 0 });
   const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
@@ -34,14 +33,7 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    const targets = { students: 1200, internships: 850 };
-    const steps = 60; let step = 0;
-    const t = setInterval(() => {
-      step++;
-      const p = step / steps;
-      setCount({ students: Math.floor(targets.students * p), internships: Math.floor(targets.internships * p) });
-      if (step >= steps) clearInterval(t);
-    }, 33);
+    const t = setInterval(() => { clearInterval(t); }, 33);
     return () => clearInterval(t);
   }, []);
 
@@ -148,7 +140,7 @@ export default function Home() {
             {FEATURES.map((f) => (
               <div key={f.title} className="group bg-white rounded-2xl p-6 border border-gray-100 hover:border-indigo-200 hover:shadow-xl hover:shadow-indigo-50 transition-all hover:-translate-y-1 relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-16 h-16 bg-indigo-50 rounded-bl-3xl opacity-0 group-hover:opacity-100 transition-opacity" />
-                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-50 to-purple-50 border border-indigo-100 flex items-center justify-center text-2xl mb-5 group-hover:scale-110 transition-transform shadow-sm">{f.icon}</div>
+                <div className="w-14 h-14 rounded-2xl bg-linear-to-br from-indigo-50 to-purple-50 border border-indigo-100 flex items-center justify-center text-2xl mb-5 group-hover:scale-110 transition-transform shadow-sm">{f.icon}</div>
                 <h3 className="text-gray-900 font-bold text-lg mb-2 group-hover:text-indigo-700 transition-colors">{f.title}</h3>
                 <p className="text-gray-400 text-sm leading-relaxed">{f.desc}</p>
               </div>
@@ -169,7 +161,7 @@ export default function Home() {
           <div className="text-center mb-16">
             <span className="inline-block bg-white text-indigo-600 text-xs font-semibold px-4 py-1.5 rounded-full mb-4 tracking-widest uppercase border border-indigo-100 shadow-sm">Process</span>
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900">Get started in 4 simple steps</h2>
-            <p className="text-gray-400 mt-4">From signup to placement — it's fast and simple.</p>
+            <p className="text-gray-400 mt-4">From signup to placement &mdash; it&apos;s fast and simple.</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {STEPS.map((s, i) => (
@@ -180,7 +172,7 @@ export default function Home() {
                   </div>
                 )}
                 <div className="relative bg-white rounded-2xl p-6 border border-indigo-100 text-center shadow-sm hover:shadow-md hover:-translate-y-1 transition-all">
-                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 text-white text-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-indigo-200">{s.icon}</div>
+                  <div className="w-16 h-16 rounded-2xl bg-linear-to-br from-indigo-500 to-purple-600 text-white text-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-indigo-200">{s.icon}</div>
                   <div className="absolute -top-3 -right-3 w-7 h-7 bg-indigo-600 text-white text-xs font-bold rounded-full flex items-center justify-center shadow-md">{s.num}</div>
                   <h3 className="text-gray-900 font-bold mb-2">{s.title}</h3>
                   <p className="text-gray-400 text-sm leading-relaxed">{s.desc}</p>
@@ -195,7 +187,7 @@ export default function Home() {
       <section id="testimonials" className="py-24 px-6 bg-white relative overflow-hidden">
         <div className="absolute bottom-0 right-0 w-64 h-64 bg-pink-50 rounded-full blur-3xl opacity-60 pointer-events-none" />
         <div className="absolute top-0 left-0 w-48 h-48 bg-indigo-50 rounded-full blur-3xl opacity-60 pointer-events-none" />
-        <div className="absolute top-8 left-1/2 -translate-x-1/2 text-[120px] font-serif text-indigo-50 pointer-events-none leading-none select-none">"</div>
+        <div className="absolute top-8 left-1/2 -translate-x-1/2 text-[120px] font-serif text-indigo-50 pointer-events-none leading-none select-none">&ldquo;</div>
         <div className="max-w-6xl mx-auto relative">
           <div className="text-center mb-16">
             <span className="inline-block bg-indigo-50 text-indigo-600 text-xs font-semibold px-4 py-1.5 rounded-full mb-4 tracking-widest uppercase border border-indigo-100">Reviews</span>
@@ -205,12 +197,12 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {TESTIMONIALS.map((t) => (
               <div key={t.name} className="bg-white rounded-2xl p-7 border border-gray-100 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all group relative overflow-hidden">
-                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 opacity-0 group-hover:opacity-100 transition-opacity rounded-t-2xl" />
-                <div className="text-3xl text-indigo-200 font-serif leading-none mb-3">"</div>
+                <div className="absolute top-0 left-0 w-full h-1 bg-linear-to-r from-indigo-400 via-purple-400 to-pink-400 opacity-0 group-hover:opacity-100 transition-opacity rounded-t-2xl" />
+                <div className="text-3xl text-indigo-200 font-serif leading-none mb-3">&ldquo;</div>
                 <p className="text-gray-600 text-sm leading-relaxed mb-6 italic">{t.text}</p>
                 <div className="flex gap-0.5 mb-4">{[...Array(t.stars)].map((_, i) => <span key={i} className="text-yellow-400">★</span>)}</div>
                 <div className="flex items-center gap-3 pt-4 border-t border-gray-50">
-                  <div className="w-11 h-11 rounded-full bg-gradient-to-br from-indigo-50 to-purple-50 border border-indigo-100 flex items-center justify-center text-2xl">{t.avatar}</div>
+                  <div className="w-11 h-11 rounded-full bg-linear-to-br from-indigo-50 to-purple-50 border border-indigo-100 flex items-center justify-center text-2xl">{t.avatar}</div>
                   <div>
                     <p className="font-bold text-gray-900 text-sm">{t.name}</p>
                     <p className="text-gray-400 text-xs mt-0.5">{t.role}</p>
